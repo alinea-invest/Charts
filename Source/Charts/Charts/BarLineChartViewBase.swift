@@ -552,6 +552,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 lastHighlighted = h
                 highlightValue(h, callDelegate: true)
             }
+            delegate?.chartValueNothingSelected?(self)
         }
     }
     
