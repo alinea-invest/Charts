@@ -45,6 +45,15 @@ public protocol ChartViewDelegate
 
     // Callbacks when Animator stops animating
     @objc optional func chartView(_ chartView: ChartViewBase, animatorDidStop animator: Animator)
+    
+    // Callback when user taps on the graph
+    @objc optional func chartViewTapDidBegin(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight)
+    
+    // Callback when user ends the taps on the graph
+    @objc optional func chartViewTapDidEnd(_ chartView: ChartViewBase)
+    
+    // Callback when user touches on the graph
+    @objc optional func chartViewTouchDidBegan(_ touchPoint: CGPoint)
 }
 
 open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
