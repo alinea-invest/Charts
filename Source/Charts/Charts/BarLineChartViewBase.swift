@@ -532,18 +532,13 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     private var _decelerationDisplayLink: NSUIDisplayLink!
     private var _decelerationVelocity = CGPoint()
     
-    @objc private func tapGestureRecognized(_ recognizer: NSUITapGestureRecognizer)
-    {
-        if _data === nil
-        {
-            return
-        }
-        
-        if recognizer.state == NSUIGestureRecognizerState.ended
-        {
+    open override func nsuiTouchesBegan(_ touches: Set<NSUITouch>, withEvent event: NSUIEvent?) {
+        if let touch = touches.first {
+            let location = touch.location(in: self)
+            
             if !isHighLightPerTapEnabled { return }
             
-            let h = getHighlightByTouchPoint(recognizer.location(in: self))
+            let h = getHighlightByTouchPoint(touch.location(in: self))
             
             if h === nil || h == self.lastHighlighted
             {
@@ -555,6 +550,69 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 lastHighlighted = h
                 highlightValue(h, callDelegate: true)
             }
+            
+            delegate?.chartViewTouchDidBegan?(location)
+        }
+        
+    }
+    
+    @objc private func tapGestureRecognized(_ recognizer: NSUITapGestureRecognizer)
+    {
+        if _data === nil
+        {
+            return
+        }
+        
+//        if !isHighLightPerTapEnabled { return }
+//
+//        let h = getHighlightByTouchPoint(recognizer.location(in: self))
+//
+//        if h === nil || h == self.lastHighlighted
+//        {
+//            lastHighlighted = nil
+//            highlightValue(nil, callDelegate: true)
+//        }
+//        else
+//        {
+//            lastHighlighted = h
+//            highlightValue(h, callDelegate: true)
+//        }
+        
+        if recognizer.state == NSUIGestureRecognizerState.recognized
+        {
+//            if !isHighLightPerTapEnabled { return }
+//
+//            let h = getHighlightByTouchPoint(recognizer.location(in: self))
+//
+//            if h === nil || h == self.lastHighlighted
+//            {
+//                lastHighlighted = nil
+//                highlightValue(nil, callDelegate: true)
+//            }
+//            else
+//            {
+//                lastHighlighted = h
+//                highlightValue(h, callDelegate: true)
+//            }
+        }
+        
+        if recognizer.state == NSUIGestureRecognizerState.ended
+        {
+//            if !isHighLightPerTapEnabled { return }
+//
+//            let h = getHighlightByTouchPoint(recognizer.location(in: self))
+//
+//            if h === nil || h == self.lastHighlighted
+//            {
+//                lastHighlighted = nil
+//                highlightValue(nil, callDelegate: true)
+//            }
+//            else
+//            {
+//                lastHighlighted = h
+//                highlightValue(h, callDelegate: true)
+//            }
+            delegate?.chartViewTapDidEnd?(self)
         }
     }
     
@@ -799,6 +857,8 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
                 _outerScrollView?.nsuiIsScrollEnabled = true
                 _outerScrollView = nil
             }
+            
+            delegate?.chartViewDidEndPanning?(self)
         }
     }
     
@@ -1287,7 +1347,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
     /// Centers the viewport to the specified y-value on the y-axis.
     /// This also refreshes the chart by calling setNeedsDisplay().
-    /// 
+    ///
     /// - Parameters:
     ///   - yValue:
     ///   - axis: - which axis should be used as a reference for the y-axis
@@ -1307,7 +1367,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
 
     /// This will move the left side of the current viewport to the specified x-value on the x-axis, and center the viewport to the specified y-value on the y-axis.
     /// This also refreshes the chart by calling setNeedsDisplay().
-    /// 
+    ///
     /// - Parameters:
     ///   - xValue:
     ///   - yValue:
@@ -1674,7 +1734,7 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
     
     /// If set to true, highlighting per dragging over a fully zoomed out chart is enabled
     /// You might want to disable this when using inside a `NSUIScrollView`
-    /// 
+    ///
     /// **default**: true
     @objc open var isHighlightPerDragEnabled: Bool
     {
